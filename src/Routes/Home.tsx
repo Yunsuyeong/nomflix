@@ -398,22 +398,6 @@ function Home() {
                                             </BigOverview>
                                         </>
                                     )}
-                                </BigMovie>
-                            </>
-                        ) : null}
-                    </AnimatePresence>
-                    <AnimatePresence>
-                        {bigMovieMatch ? (
-                            <>
-                                <Overlay
-                                    onClick={onOverlayClick}
-                                    animate={{ opacity: 1 }}
-                                    exit={{ opacity: 0 }}
-                                />
-                                <BigMovie
-                                    style={{ top: scrollY.get() + 100 }}
-                                    layoutId={bigMovieMatch.params.movieId}
-                                >
                                     {clickedMovie2 && (
                                         <>
                                             <BigCover
