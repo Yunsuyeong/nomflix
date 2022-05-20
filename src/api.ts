@@ -31,6 +31,13 @@ export interface IGetOnAirTvResult {
     total_results: number;
 }
 
+export interface IGetTopTvsResult {
+    page: number;
+    results: ITv[];
+    total_pages: number;
+    total_results: number;
+}
+
 interface ITv {
     backdrop_path: string;
     poster_path: string;
@@ -55,5 +62,11 @@ export async function getTopMovies() {
 export async function getOnairTvs() {
     return await fetch(
         `https://api.themoviedb.org/3/tv/on_the_air?api_key=9633d3074eb0813143d2c4cf83a6046b`
+    ).then((response) => response.json());
+}
+
+export async function getTopTvs() {
+    return await fetch(
+        `https://api.themoviedb.org/3/tv/top_rated?api_key=9633d3074eb0813143d2c4cf83a6046b&language=en-US&page=1`
     ).then((response) => response.json());
 }

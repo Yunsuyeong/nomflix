@@ -394,7 +394,13 @@ function Home() {
                                                 {clickedMovie1.title}
                                             </BigTitle>
                                             <BigOverview>
-                                                {clickedMovie1.overview}
+                                                {clickedMovie1.overview.length >
+                                                400
+                                                    ? clickedMovie1.overview.slice(
+                                                          0,
+                                                          400
+                                                      )
+                                                    : clickedMovie1.overview}
                                             </BigOverview>
                                         </>
                                     )}
@@ -412,7 +418,13 @@ function Home() {
                                                 {clickedMovie2.title}
                                             </BigTitle>
                                             <BigOverview>
-                                                {clickedMovie2.overview}
+                                                {clickedMovie2.overview.length >
+                                                400
+                                                    ? clickedMovie2.overview.slice(
+                                                          0,
+                                                          400
+                                                      )
+                                                    : clickedMovie2.overview}
                                             </BigOverview>
                                         </>
                                     )}
