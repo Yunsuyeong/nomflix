@@ -5,10 +5,14 @@ import { useQuery } from "react-query";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import { makeImagePath } from "../utilis";
 import {
-    getOnairTvs,
+    getAiringTvs,
     getTopTvs,
-    IGetOnAirTvResult,
+    IGetAiringTvsResult,
     IGetTopTvsResult,
+    IGetPopularTvsResult,
+    getPopularTvs,
+    getOnairTvs,
+    IGetOnairTvsResult,
 } from "../api";
 
 const Wrapper = styled.div`
@@ -24,7 +28,7 @@ const Loader = styled.div`
 `;
 
 const Banner = styled.div<{ bgPhoto: string }>`
-    height: 100vh;
+    height: 120vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -34,16 +38,29 @@ const Banner = styled.div<{ bgPhoto: string }>`
     background-size: cover;
 `;
 
-const Title = styled.h2`
-    font-size: 48px;
-    margin-bottom: 120px;
+const Slider4 = styled.div`
+    position: relative;
+    top: -800px;
 `;
 
-const Overview = styled.p`
+const Slider1 = styled.div`
     position: relative;
-    top: -120px;
-    font-size: 18px;
-    width: 50%;
+    top: -650px;
+`;
+
+const Slider2 = styled.div`
+    position: relative;
+    top: -500px;
+`;
+
+const Slider3 = styled.div`
+    position: relative;
+    top: -350px;
+`;
+
+const SliderTop = styled.div`
+    display: flex;
+    gap: 20px;
 `;
 
 const SlideBtn1 = styled.button`
@@ -58,6 +75,7 @@ const SlideBtn1 = styled.button`
     height: 20px;
     padding: 0;
     border-radius: 15px;
+    margin-top: 30px;
     &:hover {
         background: white;
         transition: all 0.3s ease;
@@ -74,6 +92,7 @@ const SlideBtn2 = styled.button`
     height: 20px;
     padding: 0;
     border-radius: 15px;
+    margin-top: 30px;
     &:hover {
         background: white;
         transition: all 0.3s ease;
@@ -82,14 +101,11 @@ const SlideBtn2 = styled.button`
     }
 `;
 
-const Slider1 = styled.div`
-    position: relative;
-    top: -310px;
-`;
-
-const Slider2 = styled.div`
-    position: relative;
-    top: -155px;
+const SliderTitle = styled.h4`
+    color: ${(props) => props.theme.white.darker};
+    font-size: 18px;
+    margin-left: 10px;
+    margin-bottom: 10px;
 `;
 
 const Row = styled(motion.div)`
@@ -153,9 +169,17 @@ const BigTitle = styled.h2`
     padding-left: 10px;
 `;
 
+const BigDate = styled.h4`
+    position: relative;
+    top: -45px;
+    font-size: 14px;
+    color: ${(props) => props.theme.white.lighter};
+    padding-left: 10px;
+`;
+
 const BigOverview = styled.p`
     position: relative;
-    top: -30px;
+    top: -60px;
     color: ${(props) => props.theme.white.lighter};
     font-size: 16px;
     padding-left: 10px;
@@ -218,20 +242,30 @@ function Tv() {
     const history = useHistory();
     const { scrollY } = useViewportScroll();
     const bigTvMatch = useRouteMatch<{ tvId: string }>("/tv/:tvId");
-    const { data, isLoading } = useQuery<IGetOnAirTvResult>(
-        ["tvs", "onair"],
-        getOnairTvs
+    const { data, isLoading } = useQuery<IGetAiringTvsResult>(
+        ["tvs", "airing"],
+        getAiringTvs
     );
-    const { data: Topdata, isLoading: isLoading2 } = useQuery<IGetTopTvsResult>(
+    const { data: Populardata, isLoading: isLoading2 } =
+        useQuery<IGetPopularTvsResult>(["tvs", "popular"], getPopularTvs);
+    const { data: Topdata, isLoading: isLoading3 } = useQuery<IGetTopTvsResult>(
         ["tvs", "topRated"],
         getTopTvs
     );
+    const { data: Onairdata, isLoading: isLoading4 } =
+        useQuery<IGetOnairTvsResult>(["tvs", "onair"], getOnairTvs);
     const [index1, setIndex1] = useState(0);
     const [index2, setIndex2] = useState(0);
+    const [index3, setIndex3] = useState(0);
+    const [index4, setIndex4] = useState(0);
     const [leaving1, setLeaving1] = useState(false);
     const [leaving2, setLeaving2] = useState(false);
+    const [leaving3, setLeaving3] = useState(false);
+    const [leaving4, setLeaving4] = useState(false);
     const toggleLeaving1 = () => setLeaving1((prev) => !prev);
     const toggleLeaving2 = () => setLeaving2((prev) => !prev);
+    const toggleLeaving3 = () => setLeaving3((prev) => !prev);
+    const toggleLeaving4 = () => setLeaving4((prev) => !prev);
     const increaseIndex1 = () => {
         if (data) {
             if (leaving1) return;
@@ -242,12 +276,30 @@ function Tv() {
         }
     };
     const increaseIndex2 = () => {
-        if (Topdata) {
+        if (Populardata) {
             if (leaving2) return;
-            toggleLeaving1();
-            const totalTvs = Topdata.results.length - 1;
+            toggleLeaving2();
+            const totalTvs = Populardata.results.length - 1;
             const maxIndex = Math.floor(totalTvs / offset) - 1;
             setIndex2((prev) => (prev === maxIndex ? 0 : prev + 1));
+        }
+    };
+    const increaseIndex3 = () => {
+        if (Topdata) {
+            if (leaving3) return;
+            toggleLeaving3();
+            const totalTvs = Topdata.results.length - 1;
+            const maxIndex = Math.floor(totalTvs / offset) - 1;
+            setIndex3((prev) => (prev === maxIndex ? 0 : prev + 1));
+        }
+    };
+    const increaseIndex4 = () => {
+        if (Onairdata) {
+            if (leaving4) return;
+            toggleLeaving4();
+            const totalTvs = Onairdata.results.length - 1;
+            const maxIndex = Math.floor(totalTvs / offset) - 1;
+            setIndex4((prev) => (prev === maxIndex ? 0 : prev + 1));
         }
     };
     const onBoxClicked = (tvId: number) => {
@@ -259,7 +311,13 @@ function Tv() {
         data?.results.find((tv) => tv.id === +bigTvMatch.params.tvId);
     const clickedTv2 =
         bigTvMatch?.params.tvId &&
+        Populardata?.results.find((tv) => tv.id === +bigTvMatch.params.tvId);
+    const clickedTv3 =
+        bigTvMatch?.params.tvId &&
         Topdata?.results.find((tv) => tv.id === +bigTvMatch.params.tvId);
+    const clickedTv4 =
+        bigTvMatch?.params.tvId &&
+        Onairdata?.results.find((tv) => tv.id === +bigTvMatch.params.tvId);
     return (
         <Wrapper>
             {isLoading ? (
@@ -270,12 +328,63 @@ function Tv() {
                         bgPhoto={makeImagePath(
                             data?.results[0].backdrop_path || ""
                         )}
-                    >
-                        <Title>{data?.results[0].original_name}</Title>
-                        <Overview>{data?.results[0].overview}</Overview>
-                    </Banner>
+                    ></Banner>
+                    <Slider4>
+                        <SliderTop>
+                            <SliderTitle>On_air</SliderTitle>
+                            <SlideBtn1 onClick={increaseIndex4}>
+                                Slide
+                            </SlideBtn1>
+                        </SliderTop>
+
+                        <AnimatePresence
+                            initial={false}
+                            onExitComplete={toggleLeaving4}
+                        >
+                            <Row
+                                variants={rowVariants}
+                                initial="invisible"
+                                animate="visible"
+                                exit="exit"
+                                transition={{ type: "tween", duration: 1 }}
+                                key={index4}
+                            >
+                                {Onairdata?.results
+                                    .slice(1)
+                                    .slice(
+                                        offset * index4,
+                                        offset * index4 + offset
+                                    )
+                                    .map((tv) => (
+                                        <Box
+                                            layoutId={tv.id + ""}
+                                            key={tv.id}
+                                            onClick={() => onBoxClicked(tv.id)}
+                                            bgPhoto={makeImagePath(
+                                                tv.backdrop_path,
+                                                "original"
+                                            )}
+                                            variants={boxVariants}
+                                            initial="normal"
+                                            whileHover="hover"
+                                            transition={{ type: "tween" }}
+                                        >
+                                            <Info variants={infoVariants}>
+                                                <h4>{tv.original_name}</h4>
+                                            </Info>
+                                        </Box>
+                                    ))}
+                            </Row>
+                        </AnimatePresence>
+                    </Slider4>
                     <Slider1>
-                        <SlideBtn1 onClick={increaseIndex1}>Slide</SlideBtn1>
+                        <SliderTop>
+                            <SliderTitle>Airing</SliderTitle>
+                            <SlideBtn1 onClick={increaseIndex1}>
+                                Slide
+                            </SlideBtn1>
+                        </SliderTop>
+
                         <AnimatePresence
                             initial={false}
                             onExitComplete={toggleLeaving1}
@@ -301,7 +410,7 @@ function Tv() {
                                             onClick={() => onBoxClicked(tv.id)}
                                             bgPhoto={makeImagePath(
                                                 tv.backdrop_path,
-                                                "w300"
+                                                "original"
                                             )}
                                             variants={boxVariants}
                                             initial="normal"
@@ -317,7 +426,12 @@ function Tv() {
                         </AnimatePresence>
                     </Slider1>
                     <Slider2>
-                        <SlideBtn2 onClick={increaseIndex2}>Slide</SlideBtn2>
+                        <SliderTop>
+                            <SliderTitle>Popular</SliderTitle>
+                            <SlideBtn2 onClick={increaseIndex2}>
+                                Silde
+                            </SlideBtn2>
+                        </SliderTop>
                         <AnimatePresence
                             initial={false}
                             onExitComplete={toggleLeaving2}
@@ -327,10 +441,10 @@ function Tv() {
                                 initial="invisible"
                                 animate="visible"
                                 exit="exit"
-                                transition={{ type: "Tween", duration: 1 }}
+                                transition={{ type: "tween", duration: 1 }}
                                 key={index2}
                             >
-                                {Topdata?.results
+                                {Populardata?.results
                                     .slice(1)
                                     .slice(
                                         offset * index2,
@@ -343,7 +457,7 @@ function Tv() {
                                             onClick={() => onBoxClicked(tv.id)}
                                             bgPhoto={makeImagePath(
                                                 tv.backdrop_path,
-                                                "w300"
+                                                "original"
                                             )}
                                             variants={boxVariants}
                                             initial="normal"
@@ -358,6 +472,54 @@ function Tv() {
                             </Row>
                         </AnimatePresence>
                     </Slider2>
+                    <Slider3>
+                        <SliderTop>
+                            <SliderTitle>Top_rated</SliderTitle>
+                            <SlideBtn2 onClick={increaseIndex3}>
+                                Slide
+                            </SlideBtn2>
+                        </SliderTop>
+
+                        <AnimatePresence
+                            initial={false}
+                            onExitComplete={toggleLeaving3}
+                        >
+                            <Row
+                                variants={rowVariants}
+                                initial="invisible"
+                                animate="visible"
+                                exit="exit"
+                                transition={{ type: "Tween", duration: 1 }}
+                                key={index3}
+                            >
+                                {Topdata?.results
+                                    .slice(1)
+                                    .slice(
+                                        offset * index3,
+                                        offset * index3 + offset
+                                    )
+                                    .map((tv) => (
+                                        <Box
+                                            layoutId={tv.id + ""}
+                                            key={tv.id}
+                                            onClick={() => onBoxClicked(tv.id)}
+                                            bgPhoto={makeImagePath(
+                                                tv.backdrop_path,
+                                                "original"
+                                            )}
+                                            variants={boxVariants}
+                                            initial="normal"
+                                            whileHover="hover"
+                                            transition={{ type: "tween" }}
+                                        >
+                                            <Info variants={infoVariants}>
+                                                <h4>{tv.original_name}</h4>
+                                            </Info>
+                                        </Box>
+                                    ))}
+                            </Row>
+                        </AnimatePresence>
+                    </Slider3>
                     <AnimatePresence>
                         {bigTvMatch ? (
                             <>
@@ -370,19 +532,51 @@ function Tv() {
                                     style={{ top: scrollY.get() + 100 }}
                                     layoutId={bigTvMatch.params.tvId}
                                 >
+                                    {clickedTv4 && (
+                                        <>
+                                            <BigCover
+                                                style={{
+                                                    backgroundImage: `linear-gradient(to top, black, transparent), url(${makeImagePath(
+                                                        clickedTv4.backdrop_path,
+                                                        "original"
+                                                    )})`,
+                                                }}
+                                            />
+                                            <BigTitle>
+                                                {clickedTv4.original_name}
+                                            </BigTitle>
+                                            <BigDate>
+                                                First_air :{" "}
+                                                {clickedTv4.first_air_date}
+                                            </BigDate>
+                                            <BigOverview>
+                                                {clickedTv4.overview.length >
+                                                400
+                                                    ? clickedTv4.overview.slice(
+                                                          0,
+                                                          400
+                                                      )
+                                                    : clickedTv4.overview}
+                                            </BigOverview>
+                                        </>
+                                    )}
                                     {clickedTv1 && (
                                         <>
                                             <BigCover
                                                 style={{
                                                     backgroundImage: `linear-gradient(to top, black, transparent), url(${makeImagePath(
                                                         clickedTv1.backdrop_path,
-                                                        "w500"
+                                                        "original"
                                                     )})`,
                                                 }}
                                             />
                                             <BigTitle>
                                                 {clickedTv1.original_name}
                                             </BigTitle>
+                                            <BigDate>
+                                                First_air :{" "}
+                                                {clickedTv1.first_air_date}
+                                            </BigDate>
                                             <BigOverview>
                                                 {clickedTv1.overview.length >
                                                 400
@@ -400,13 +594,17 @@ function Tv() {
                                                 style={{
                                                     backgroundImage: `linear-gradient(to top, black, transparent), url(${makeImagePath(
                                                         clickedTv2.backdrop_path,
-                                                        "w500"
+                                                        "original"
                                                     )})`,
                                                 }}
                                             />
                                             <BigTitle>
                                                 {clickedTv2.original_name}
                                             </BigTitle>
+                                            <BigDate>
+                                                First_air :{" "}
+                                                {clickedTv2.first_air_date}
+                                            </BigDate>
                                             <BigOverview>
                                                 {clickedTv2.overview.length >
                                                 400
@@ -415,6 +613,34 @@ function Tv() {
                                                           400
                                                       )
                                                     : clickedTv2.overview}
+                                            </BigOverview>
+                                        </>
+                                    )}
+                                    {clickedTv3 && (
+                                        <>
+                                            <BigCover
+                                                style={{
+                                                    backgroundImage: `linear-gradient(to top, black, transparent), url(${makeImagePath(
+                                                        clickedTv3.backdrop_path,
+                                                        "original"
+                                                    )})`,
+                                                }}
+                                            />
+                                            <BigTitle>
+                                                {clickedTv3.original_name}
+                                            </BigTitle>
+                                            <BigDate>
+                                                First_air :{" "}
+                                                {clickedTv3.first_air_date}
+                                            </BigDate>
+                                            <BigOverview>
+                                                {clickedTv3.overview.length >
+                                                400
+                                                    ? clickedTv3.overview.slice(
+                                                          0,
+                                                          400
+                                                      )
+                                                    : clickedTv3.overview}
                                             </BigOverview>
                                         </>
                                     )}

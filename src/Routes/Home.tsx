@@ -6,8 +6,10 @@ import styled from "styled-components";
 import {
     getNowMovies,
     getTopMovies,
+    getUpMovies,
     IGetNowMoviesResult,
     IGetTopMoviesResult,
+    IGetUpMoviesResult,
 } from "../api";
 import { makeImagePath } from "../utilis";
 
@@ -24,7 +26,7 @@ const Loader = styled.div`
 `;
 
 const Banner = styled.div<{ bgPhoto: string }>`
-    height: 100vh;
+    height: 120vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -35,15 +37,37 @@ const Banner = styled.div<{ bgPhoto: string }>`
 `;
 
 const Title = styled.h2`
+    position: relative;
+    top: -120px;
     font-size: 48px;
     margin-bottom: 120px;
 `;
 
 const Overview = styled.p`
     position: relative;
-    top: -120px;
+    top: -200px;
     font-size: 18px;
     width: 50%;
+`;
+
+const Slider = styled.div`
+    position: relative;
+    top: -400px;
+`;
+
+const Slider2 = styled.div`
+    position: relative;
+    top: -250px;
+`;
+
+const Slider3 = styled.div`
+    position: relative;
+    top: -100px;
+`;
+
+const SliderTop = styled.div`
+    display: flex;
+    gap: 20px;
 `;
 
 const SlideBtn1 = styled.button`
@@ -58,6 +82,7 @@ const SlideBtn1 = styled.button`
     height: 20px;
     padding: 0;
     border-radius: 15px;
+    margin-top: 30px;
     &:hover {
         background: white;
         transition: all 0.3s ease;
@@ -74,6 +99,7 @@ const SlideBtn2 = styled.button`
     height: 20px;
     padding: 0;
     border-radius: 15px;
+    margin-top: 30px;
     &:hover {
         background: white;
         transition: all 0.3s ease;
@@ -82,14 +108,32 @@ const SlideBtn2 = styled.button`
     }
 `;
 
-const Slider = styled.div`
-    position: relative;
-    top: -310px;
+const SlideBtn3 = styled.button`
+    color: white;
+    background: rgb(0, 172, 238);
+    background: linear-gradient(
+        0deg,
+        rgba(0, 172, 238, 1) 0%,
+        rgba(2, 126, 251, 1) 100%
+    );
+    width: 60px;
+    height: 20px;
+    padding: 0;
+    border-radius: 15px;
+    margin-top: 30px;
+    &:hover {
+        background: white;
+        transition: all 0.3s ease;
+        box-shadow: none;
+        color: rgba(2, 126, 251, 1);
+    }
 `;
 
-const Slider2 = styled.div`
-    position: relative;
-    top: -155px;
+const SliderTitle = styled.h4`
+    color: ${(props) => props.theme.white.darker};
+    font-size: 18px;
+    margin-left: 10px;
+    margin-bottom: 10px;
 `;
 
 const Row = styled(motion.div)`
@@ -153,9 +197,17 @@ const BigTitle = styled.h2`
     padding-left: 10px;
 `;
 
+const BigDate = styled.h4`
+    position: relative;
+    top: -45px;
+    font-size: 14px;
+    color: ${(props) => props.theme.white.lighter};
+    padding-left: 10px;
+`;
+
 const BigOverview = styled.p`
     position: relative;
-    top: -30px;
+    top: -60px;
     color: ${(props) => props.theme.white.lighter};
     font-size: 16px;
     padding-left: 10px;
@@ -227,10 +279,14 @@ function Home() {
     const { data: Topdata, isLoading: isLoading2 } =
         useQuery<IGetTopMoviesResult>(["movies", "topRated"], getTopMovies);
 
+    const { data: Updata, isLoading: isLoading3 } =
+        useQuery<IGetUpMoviesResult>(["movies", "upcoming"], getUpMovies);
     const [index1, setIndex1] = useState(0);
     const [index2, setIndex2] = useState(0);
+    const [index3, setIndex3] = useState(0);
     const [leaving1, setLeaving1] = useState(false);
     const [leaving2, setLeaving2] = useState(false);
+    const [leaving3, setLeaving3] = useState(false);
     const increaseIndex = () => {
         if (data) {
             if (leaving1) return;
@@ -249,9 +305,19 @@ function Home() {
             setIndex2((prev) => (prev === maxIndex ? 0 : prev + 1));
         }
     };
+    const increaseIndex3 = () => {
+        if (Updata) {
+            if (leaving2) return;
+            toggleLeaving3();
+            const totalMovies = Updata.results.length - 1;
+            const maxIndex = Math.floor(totalMovies / offset) - 1;
+            setIndex3((prev) => (prev === maxIndex ? 0 : prev + 1));
+        }
+    };
 
     const toggleLeaving1 = () => setLeaving1((prev) => !prev);
     const toggleLeaving2 = () => setLeaving2((prev) => !prev);
+    const toggleLeaving3 = () => setLeaving3((prev) => !prev);
     const onBoxClicked = (movieId: number) => {
         history.push(`/movies/${movieId}`);
     };
@@ -266,6 +332,11 @@ function Home() {
         Topdata?.results.find(
             (movie) => movie.id === +bigMovieMatch.params.movieId
         );
+    const clickedMovie3 =
+        bigMovieMatch?.params.movieId &&
+        Updata?.results.find(
+            (movie) => movie.id === +bigMovieMatch.params.movieId
+        );
     return (
         <Wrapper>
             {isLoading1 ? (
@@ -274,14 +345,18 @@ function Home() {
                 <>
                     <Banner
                         bgPhoto={makeImagePath(
-                            data?.results[0].backdrop_path || ""
+                            data?.results[0].backdrop_path || "",
+                            "original"
                         )}
                     >
                         <Title>{data?.results[0].title}</Title>
                         <Overview>{data?.results[0].overview}</Overview>
                     </Banner>
                     <Slider>
-                        <SlideBtn1 onClick={increaseIndex}>Slide</SlideBtn1>
+                        <SliderTop>
+                            <SliderTitle>Now_playing</SliderTitle>
+                            <SlideBtn1 onClick={increaseIndex}>Slide</SlideBtn1>
+                        </SliderTop>
                         <AnimatePresence
                             initial={false}
                             onExitComplete={toggleLeaving1}
@@ -309,7 +384,7 @@ function Home() {
                                             }
                                             bgPhoto={makeImagePath(
                                                 movie.backdrop_path,
-                                                "w300"
+                                                "original"
                                             )}
                                             variants={boxVariants}
                                             initial="normal"
@@ -325,7 +400,12 @@ function Home() {
                         </AnimatePresence>
                     </Slider>
                     <Slider2>
-                        <SlideBtn2 onClick={increaseIndex2}>Slide</SlideBtn2>
+                        <SliderTop>
+                            <SliderTitle>Top_rated</SliderTitle>
+                            <SlideBtn2 onClick={increaseIndex2}>
+                                Slide
+                            </SlideBtn2>
+                        </SliderTop>
                         <AnimatePresence
                             initial={false}
                             onExitComplete={toggleLeaving2}
@@ -353,7 +433,7 @@ function Home() {
                                             }
                                             bgPhoto={makeImagePath(
                                                 movie.backdrop_path,
-                                                "w300"
+                                                "original"
                                             )}
                                             variants={boxVariants}
                                             initial="normal"
@@ -368,6 +448,55 @@ function Home() {
                             </Row>
                         </AnimatePresence>
                     </Slider2>
+                    <Slider3>
+                        <SliderTop>
+                            <SliderTitle>Upcoming</SliderTitle>
+                            <SlideBtn3 onClick={increaseIndex3}>
+                                Slide
+                            </SlideBtn3>
+                        </SliderTop>
+                        <AnimatePresence
+                            initial={false}
+                            onExitComplete={toggleLeaving3}
+                        >
+                            <Row
+                                variants={rowVariants}
+                                initial="invisible"
+                                animate="visible"
+                                exit="exit"
+                                transition={{ type: "tween", duration: 1 }}
+                                key={index3}
+                            >
+                                {Updata?.results
+                                    .slice(1)
+                                    .slice(
+                                        offset * index3,
+                                        offset * index3 + offset
+                                    )
+                                    .map((movie) => (
+                                        <Box
+                                            layoutId={movie.id + ""}
+                                            key={movie.id}
+                                            onClick={() =>
+                                                onBoxClicked(movie.id)
+                                            }
+                                            bgPhoto={makeImagePath(
+                                                movie.backdrop_path,
+                                                "original"
+                                            )}
+                                            variants={boxVariants}
+                                            initial="normal"
+                                            whileHover="hover"
+                                            transition={{ type: "tween" }}
+                                        >
+                                            <Info variants={infoVariants}>
+                                                <h4>{movie.title}</h4>
+                                            </Info>
+                                        </Box>
+                                    ))}
+                            </Row>
+                        </AnimatePresence>
+                    </Slider3>
                     <AnimatePresence>
                         {bigMovieMatch ? (
                             <>
@@ -386,13 +515,17 @@ function Home() {
                                                 style={{
                                                     backgroundImage: `linear-gradient(to top, black, transparent), url(${makeImagePath(
                                                         clickedMovie1.backdrop_path,
-                                                        "w500"
+                                                        "original"
                                                     )})`,
                                                 }}
                                             />
                                             <BigTitle>
                                                 {clickedMovie1.title}
                                             </BigTitle>
+                                            <BigDate>
+                                                Release :{" "}
+                                                {clickedMovie1.release_date}
+                                            </BigDate>
                                             <BigOverview>
                                                 {clickedMovie1.overview.length >
                                                 400
@@ -410,13 +543,17 @@ function Home() {
                                                 style={{
                                                     backgroundImage: `linear-gradient(to top, black, transparent), url(${makeImagePath(
                                                         clickedMovie2.backdrop_path,
-                                                        "w500"
+                                                        "original"
                                                     )})`,
                                                 }}
                                             />
                                             <BigTitle>
                                                 {clickedMovie2.title}
                                             </BigTitle>
+                                            <BigDate>
+                                                Release :{" "}
+                                                {clickedMovie2.release_date}
+                                            </BigDate>
                                             <BigOverview>
                                                 {clickedMovie2.overview.length >
                                                 400
@@ -425,6 +562,34 @@ function Home() {
                                                           400
                                                       )
                                                     : clickedMovie2.overview}
+                                            </BigOverview>
+                                        </>
+                                    )}
+                                    {clickedMovie3 && (
+                                        <>
+                                            <BigCover
+                                                style={{
+                                                    backgroundImage: `linear-gradient(to top, black, transparent), url(${makeImagePath(
+                                                        clickedMovie3.backdrop_path,
+                                                        "original"
+                                                    )})`,
+                                                }}
+                                            />
+                                            <BigTitle>
+                                                {clickedMovie3.title}
+                                            </BigTitle>
+                                            <BigDate>
+                                                Release :{" "}
+                                                {clickedMovie3.release_date}
+                                            </BigDate>
+                                            <BigOverview>
+                                                {clickedMovie3.overview.length >
+                                                400
+                                                    ? clickedMovie3.overview.slice(
+                                                          0,
+                                                          400
+                                                      )
+                                                    : clickedMovie3.overview}
                                             </BigOverview>
                                         </>
                                     )}
