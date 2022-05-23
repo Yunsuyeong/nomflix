@@ -197,7 +197,7 @@ const BigTitle = styled.h2`
     padding-left: 10px;
 `;
 
-const BigDate = styled.h4`
+const BigVoting = styled.h4`
     position: relative;
     top: -45px;
     font-size: 14px;
@@ -307,7 +307,7 @@ function Home() {
     };
     const increaseIndex3 = () => {
         if (Updata) {
-            if (leaving2) return;
+            if (leaving3) return;
             toggleLeaving3();
             const totalMovies = Updata.results.length - 1;
             const maxIndex = Math.floor(totalMovies / offset) - 1;
@@ -520,12 +520,17 @@ function Home() {
                                                 }}
                                             />
                                             <BigTitle>
-                                                {clickedMovie1.title}
+                                                {clickedMovie1.title} (
+                                                {clickedMovie1.release_date.slice(
+                                                    0,
+                                                    4
+                                                )}
+                                                )
                                             </BigTitle>
-                                            <BigDate>
-                                                Release :{" "}
-                                                {clickedMovie1.release_date}
-                                            </BigDate>
+                                            <BigVoting>
+                                                Voting :{" "}
+                                                {clickedMovie1.vote_average}
+                                            </BigVoting>
                                             <BigOverview>
                                                 {clickedMovie1.overview.length >
                                                 400
@@ -548,12 +553,17 @@ function Home() {
                                                 }}
                                             />
                                             <BigTitle>
-                                                {clickedMovie2.title}
+                                                {clickedMovie2.title} (
+                                                {clickedMovie2.release_date.slice(
+                                                    0,
+                                                    4
+                                                )}
+                                                )
                                             </BigTitle>
-                                            <BigDate>
-                                                Release :{" "}
-                                                {clickedMovie2.release_date}
-                                            </BigDate>
+                                            <BigVoting>
+                                                Voting :{" "}
+                                                {clickedMovie2.vote_average}
+                                            </BigVoting>
                                             <BigOverview>
                                                 {clickedMovie2.overview.length >
                                                 400
@@ -576,12 +586,17 @@ function Home() {
                                                 }}
                                             />
                                             <BigTitle>
-                                                {clickedMovie3.title}
+                                                {clickedMovie3.title} (
+                                                {clickedMovie3.release_date.slice(
+                                                    0,
+                                                    4
+                                                )}
+                                                )
                                             </BigTitle>
-                                            <BigDate>
-                                                Release :{" "}
-                                                {clickedMovie3.release_date}
-                                            </BigDate>
+                                            <BigVoting>
+                                                Voting :{" "}
+                                                {clickedMovie3.vote_average}
+                                            </BigVoting>
                                             <BigOverview>
                                                 {clickedMovie3.overview.length >
                                                 400

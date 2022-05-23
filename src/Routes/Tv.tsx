@@ -169,7 +169,7 @@ const BigTitle = styled.h2`
     padding-left: 10px;
 `;
 
-const BigDate = styled.h4`
+const BigVoting = styled.h4`
     position: relative;
     top: -45px;
     font-size: 14px;
@@ -543,12 +543,17 @@ function Tv() {
                                                 }}
                                             />
                                             <BigTitle>
-                                                {clickedTv4.original_name}
+                                                {clickedTv4.original_name} (
+                                                {clickedTv4.first_air_date.slice(
+                                                    0,
+                                                    4
+                                                )}
+                                                )
                                             </BigTitle>
-                                            <BigDate>
-                                                First_air :{" "}
-                                                {clickedTv4.first_air_date}
-                                            </BigDate>
+                                            <BigVoting>
+                                                Voting :{" "}
+                                                {clickedTv4.vote_average}
+                                            </BigVoting>
                                             <BigOverview>
                                                 {clickedTv4.overview.length >
                                                 400
@@ -571,12 +576,17 @@ function Tv() {
                                                 }}
                                             />
                                             <BigTitle>
-                                                {clickedTv1.original_name}
+                                                {clickedTv1.original_name} (
+                                                {clickedTv1.first_air_date.slice(
+                                                    0,
+                                                    4
+                                                )}
+                                                )
                                             </BigTitle>
-                                            <BigDate>
-                                                First_air :{" "}
-                                                {clickedTv1.first_air_date}
-                                            </BigDate>
+                                            <BigVoting>
+                                                Voting :{" "}
+                                                {clickedTv1.vote_average}
+                                            </BigVoting>
                                             <BigOverview>
                                                 {clickedTv1.overview.length >
                                                 400
@@ -599,12 +609,17 @@ function Tv() {
                                                 }}
                                             />
                                             <BigTitle>
-                                                {clickedTv2.original_name}
+                                                {clickedTv2.original_name} (
+                                                {clickedTv2.first_air_date.slice(
+                                                    0,
+                                                    4
+                                                )}
+                                                )
                                             </BigTitle>
-                                            <BigDate>
-                                                First_air :{" "}
-                                                {clickedTv2.first_air_date}
-                                            </BigDate>
+                                            <BigVoting>
+                                                Voting :{" "}
+                                                {clickedTv2.vote_average}
+                                            </BigVoting>
                                             <BigOverview>
                                                 {clickedTv2.overview.length >
                                                 400
@@ -627,12 +642,17 @@ function Tv() {
                                                 }}
                                             />
                                             <BigTitle>
-                                                {clickedTv3.original_name}
+                                                {clickedTv3.original_name} (
+                                                {clickedTv3.first_air_date.slice(
+                                                    0,
+                                                    4
+                                                )}
+                                                )
                                             </BigTitle>
-                                            <BigDate>
-                                                First_air :{" "}
-                                                {clickedTv3.first_air_date}
-                                            </BigDate>
+                                            <BigVoting>
+                                                Voting :{" "}
+                                                {clickedTv3.vote_average}
+                                            </BigVoting>
                                             <BigOverview>
                                                 {clickedTv3.overview.length >
                                                 400

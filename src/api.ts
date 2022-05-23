@@ -27,6 +27,13 @@ export interface IGetUpMoviesResult {
     total_results: number;
 }
 
+export interface IGetSearchMovieResult {
+    page: number;
+    results: IMovie[];
+    total_pages: number;
+    total_results: number;
+}
+
 interface IMovie {
     backdrop_path: string;
     poster_path: string;
@@ -59,6 +66,13 @@ export interface IGetPopularTvsResult {
 }
 
 export interface IGetTopTvsResult {
+    page: number;
+    results: ITv[];
+    total_pages: number;
+    total_results: number;
+}
+
+export interface IGetSearchTvResult {
     page: number;
     results: ITv[];
     total_pages: number;
